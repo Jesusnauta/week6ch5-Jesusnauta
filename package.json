@@ -1,12 +1,12 @@
 {
-  "name": "week6.server",
+  "name": "week6ch5",
   "version": "1.0.0",
   "description": "Node Server",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env PORT=4500 node ./dist/index.js -w",
-    "start:mon": "cross-env PORT=4500 nodemon ./dist/index.js",
+    "start": "cross-env PORT=3500 node ./dist/index.js -w",
+    "start:mon": "cross-env PORT=3500 nodemon ./dist/index.js",
     "build": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
