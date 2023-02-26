@@ -1,8 +1,8 @@
+/* eslint-disable new-cap */
 import { Router } from 'express';
 import { BeersController } from '../controllers/beers.controller.js';
 import { BeersFileRepo } from '../repository/beers.file.repo.js';
 
-// eslint-disable-next-line new-cap
 export const beersRouter = Router();
 const repo = new BeersFileRepo();
 const controller = new BeersController(repo);
