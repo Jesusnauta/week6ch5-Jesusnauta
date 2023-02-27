@@ -2,9 +2,14 @@ import { Response, Request } from 'express';
 import { BeersFileRepo } from '../repository/beers.file.repo.js';
 
 export class BeersController {
+<<<<<<< HEAD
   constructor(public repo: BeersFileRepo) {
     this.repo = repo;
   }
+=======
+  // eslint-disable-next-line no-useless-constructor, no-unused-vars
+  constructor(public repo: BeersFileRepo) {}
+>>>>>>> a985150 (✅ Add components files)
 
   getAll(_req: Request, resp: Response) {
     this.repo.read().then((data) => {
@@ -13,6 +18,7 @@ export class BeersController {
   }
 
   get(req: Request, resp: Response) {
+<<<<<<< HEAD
     this.repo.read().then((data) => {
       const { id } = req.params;
       const infoId = data.find((item) => item.id === Number(id));
@@ -41,4 +47,14 @@ export class BeersController {
       resp.send('Delete');
     });
   }
+=======
+    resp.send('This is a beer ' + req.params.id);
+  }
+
+  post(_req: Request, _resp: Response) {}
+
+  patch(_req: Request, _resp: Response) {}
+
+  delete(_req: Request, _resp: Response) {}
+>>>>>>> a985150 (✅ Add components files)
 }

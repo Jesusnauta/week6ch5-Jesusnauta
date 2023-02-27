@@ -1,13 +1,18 @@
 import fs from 'fs/promises';
 
+<<<<<<< HEAD
 const file = 'data/data.json';
 
 import { Beers } from '../models/beers.js';
+=======
+const file = './data/data.json';
+>>>>>>> a985150 (✅ Add components files)
 
 export class BeersFileRepo {
   read() {
     return fs
       .readFile(file, { encoding: 'utf-8' })
+<<<<<<< HEAD
       .then((data) => JSON.parse(data) as Beers[]);
   }
 
@@ -41,4 +46,12 @@ export class BeersFileRepo {
     const restFinalData = JSON.stringify(restData);
     await fs.writeFile(file, restFinalData, { encoding: 'utf-8' });
   }
+=======
+      .then((data) => JSON.parse(data) as any[]);
+  }
+
+  write() {}
+  update() {}
+  delete() {}
+>>>>>>> a985150 (✅ Add components files)
 }
