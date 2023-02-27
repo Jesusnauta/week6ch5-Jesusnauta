@@ -46,4 +46,3 @@ export class BeersFileRepo {
     await fs.writeFile(file, restFinalData, { encoding: 'utf-8' });
   }
 }
-export { Beers };
