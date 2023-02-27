@@ -21,7 +21,7 @@ describe('Given BeersFileRepo', () => {
       expect(result).toEqual([]);
     });
   });
-  console.log('sonar');
+  console.log('sonar2');
   describe('When I use queryID', () => {
     test('Then it should return an object if it has a valid id', async () => {
       (fs.readFile as jest.Mock).mockResolvedValue('[{"id": "1"}]');
