@@ -45,6 +45,6 @@ export class BeersController {
 
   async delete(req: Request, resp: Response) {
     await this.repo.delete(Number(req.params.id));
-    resp.send(`<p>Deleted item ${req.params.id}`);
+    resp.send(`<p>Deleted  ${req.params.id}`);
   }
 }
