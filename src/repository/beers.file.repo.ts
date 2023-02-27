@@ -1,19 +1,8 @@
-/* eslint-disable lines-between-class-members */
 import fs from 'fs/promises';
 
-const file = './data/data.json';
+const file = 'data/data.json';
 
-export type Beers = {
-  id: number;
-  name: string;
-  price: number;
-};
-
-export interface BeersRepoStructure {
-  read(): Promise<Beers[]>;
-  // eslint-disable-next-line no-unused-vars
-  write(info: Beers): Promise<string | object>;
-}
+import { Beers } from '../models/beers.js';
 
 export class BeersFileRepo {
   read() {
@@ -22,33 +11,34 @@ export class BeersFileRepo {
       .then((data) => JSON.parse(data) as Beers[]);
   }
 
-  async readId(id: Beers['id']) {
-    const data = await fs.readFile(file, 'utf-8');
-    const parsedData: Beers[] = JSON.parse(data);
-    return parsedData.filter((thing) => thing.id === id)[0];
+  async readById(id: Beers['id']) {
+    const info = await fs.readFile(file, { encoding: 'utf-8' });
+    const infoParse: Beers[] = JSON.parse(info);
+    return infoParse.find((item) => item.id === id);
   }
 
   async write(info: Beers) {
-    const data = await fs.readFile(file, { encoding: 'utf-8' });
-    const parsedData: Beers[] = JSON.parse(data);
-    const finalData = JSON.stringify([...parsedData, info]);
-    await fs.writeFile(file, finalData, { encoding: 'utf-8' });
-    return 'Lets go! (write)';
+    const infoAdd = await fs.readFile(file, { encoding: 'utf-8' });
+    const dataInfoAdd: Beers[] = JSON.parse(infoAdd);
+    const totalData = JSON.stringify([...dataInfoAdd, info]);
+    await fs.writeFile(file, totalData, { encoding: 'utf-8' });
   }
+
   async update(info: Beers) {
-    const data = await fs.readFile(file, { encoding: 'utf-8' });
-    const parsedData: Beers[] = JSON.parse(data);
-    const updatedData = JSON.stringify(
-      parsedData.map((item) => (item.id === info.id ? info : item))
+    const infoUpdate = await fs.readFile(file, { encoding: 'utf-8' });
+    const dataInfoUpdate: Beers[] = JSON.parse(infoUpdate);
+    const updateData = dataInfoUpdate.map((item) =>
+      item.id === info.id ? info : item
     );
-    await fs.writeFile(file, updatedData, 'utf-8');
+    const finalData = JSON.stringify(updateData);
+    await fs.writeFile(file, finalData, { encoding: 'utf-8' });
   }
+
   async delete(id: Beers['id']) {
-    const data = await fs.readFile(file, 'utf-8');
-    const parsedData: Beers[] = JSON.parse(data);
-    const finalData = JSON.stringify(
-      parsedData.filter((item) => item.id !== id)
-    );
-    await fs.writeFile(file, finalData, 'utf-8');
+    const infoDelete = await fs.readFile(file, { encoding: 'utf-8' });
+    const dataInfoDelete: Beers[] = JSON.parse(infoDelete);
+    const restData = dataInfoDelete.filter((item) => item.id !== id);
+    const restFinalData = JSON.stringify(restData);
+    await fs.writeFile(file, restFinalData, { encoding: 'utf-8' });
   }
 }
