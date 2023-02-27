@@ -2,13 +2,8 @@ import { Response, Request } from 'express';
 import { BeersFileRepo } from '../repository/beers.file.repo.js';
 
 export class BeersController {
-  constructor(public repo: BeersFileRepo) {
-    this.repo = repo;
-  }
+  // eslint-disable-next-line no-useless-constructor, no-unused-vars
   constructor(public repo: BeersFileRepo) {}
-  constructor(public repo: BeersFileRepo) {
-    this.repo = repo;
-  }
 
   getAll(_req: Request, resp: Response) {
     this.repo.read().then((data) => {
@@ -16,59 +11,40 @@ export class BeersController {
     });
   }
 
-  get(req: Request, resp: Response)
-    this.repo.read().then((data) => {
+  get(req: Request, resp: Response) {
+    this.repo.read().then((data: any[]) => {
+      console.log(data);
       const { id } = req.params;
-      const infoId = data.find((item) => item.id === Number(id));
-      resp.json(infoId);
+      const specificData = data.find(
+        (item: { id: number }) => item.id === Number(id)
+      );
+
+      resp.json(specificData);
     });
   }
 
   post(req: Request, resp: Response) {
-    this.repo.write(req.body).then((_data) => {
-      resp.send('Add');
-    });
+    console.log(req.body);
+    this.repo.write(req.body).then((data: any) => console.log(data));
+    resp.send(`<p> Post</p>`);
   }
 
   async patch(req: Request, resp: Response) {
     const id = Number(req.params.id);
-    const prevThing: any = await this.repo.readById(id);
-    const newThing = req.body;
-    const updateThing = Object.assign(prevThing, newThing);
-    await this.repo.update(updateThing);
-    resp.send('Update');
+    if (!id) {
+      return;
+    }
+
+    const prevBeer: any = await this.repo.readId(id);
+    console.log(prevBeer);
+    const newBeer = req.body;
+    const updateBeer = Object.assign(prevBeer, newBeer);
+    await this.repo.update(updateBeer);
+    resp.send('Updated');
   }
 
-  delete(req: Request, resp: Response) {
-    const { id } = req.params;
-    this.repo.delete(Number(id)).then((_data) => {
-      resp.send('Delete');
-    });
+  async delete(req: Request, resp: Response) {
+    await this.repo.delete(Number(req.params.id));
+    resp.send(`<p>Deleted item ${req.params.id}`);
   }
-    resp.send('This is a beer ' + req.params.id);
-
-
-
-  post(req: Request, resp: Response) {
-    this.repo.write(req.body).then((_data) => {
-      resp.send('Add');
-    });
-  }
-
-  async patch(req: Request, resp: Response) {
-    const id = Number(req.params.id);
-    const prevThing: any = await this.repo.readById(id);
-    const newThing = req.body;
-    const updateThing = Object.assign(prevThing, newThing);
-    await this.repo.update(updateThing);
-    resp.send('Update');
-  }
-
-  delete(_req: Request, _resp: Response) {}
-  delete(req: Request, resp: Response) {
-    const { id } = req.params;
-    this.repo.delete(Number(id)).then((_data) => {
-      resp.send('Delete');
-    });
-  }
-
+}
