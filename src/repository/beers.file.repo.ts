@@ -1,48 +1,64 @@
 import fs from 'fs/promises';
+import { Repo } from './repo.interface';
+import { Beer } from '../entities/beers';
 
-const file = 'data/data.json';
+const file = './data/data.json';
 
-import { Beers } from '../models/beers.js';
-
-export class BeersFileRepo {
-  readId(_id: number): any {
+export class BeersFileRepo implements Repo<Beer> {
+  write(newBeer: Beer) {
     throw new Error('Method not implemented.');
   }
-  // eslint-disable-next-line lines-between-class-members
-  read() {
-    return fs
-      .readFile(file, { encoding: 'utf-8' })
-      .then((data) => JSON.parse(data) as Beers[]);
+
+  async query(): Promise<Beer[]> {
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    return JSON.parse(initialData);
   }
 
-  async readById(id: Beers['id']) {
-    const info = await fs.readFile(file, { encoding: 'utf-8' });
-    const infoParse: Beers[] = JSON.parse(info);
-    return infoParse.find((item) => item.id === id);
+  async queryId(id: string): Promise<Beer> {
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    const data: Beer[] = JSON.parse(initialData);
+    const finalData = data.find((item) => item.name === id);
+    if (!finalData) throw new Error('Id not found');
+    return finalData;
   }
 
-  async write(info: Beers) {
-    const infoAdd = await fs.readFile(file, { encoding: 'utf-8' });
-    const dataInfoAdd: Beers[] = JSON.parse(infoAdd);
-    const totalData = JSON.stringify([...dataInfoAdd, info]);
-    await fs.writeFile(file, totalData, { encoding: 'utf-8' });
+  async create(info: Partial<Beer>): Promise<Beer> {
+    // Future if (!validateInfo(info)) throw new Error('Not valid data');
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    const data: Beer[] = JSON.parse(initialData);
+    info.name = String(Math.floor(Math.random() * 1000_000));
+    const finalData = [...data, info];
+    await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
+    return info as Beer;
   }
 
-  async update(info: Beers) {
-    const infoUpdate = await fs.readFile(file, { encoding: 'utf-8' });
-    const dataInfoUpdate: Beers[] = JSON.parse(infoUpdate);
-    const updateData = dataInfoUpdate.map((item) =>
-      item.id === info.id ? info : item
-    );
-    const finalData = JSON.stringify(updateData);
-    await fs.writeFile(file, finalData, { encoding: 'utf-8' });
+  async update(info: Partial<Beer>): Promise<Beer> {
+    if (!info.id) throw new Error('Not valid data');
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    const data: Beer[] = JSON.parse(initialData);
+    let updatedItem: Beer = {} as Beer;
+    const finalData = data.map((item) => {
+      if (item.id === info.id) {
+        updatedItem = { ...item, ...info };
+        return updatedItem;
+      }
+
+      return item;
+    });
+
+    if (!updatedItem.id) throw new Error('Id not found');
+    await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
+    return updatedItem as Beer;
   }
 
-  async delete(id: Beers['id']) {
-    const infoDelete = await fs.readFile(file, { encoding: 'utf-8' });
-    const dataInfoDelete: Beers[] = JSON.parse(infoDelete);
-    const restData = dataInfoDelete.filter((item) => item.id !== id);
-    const restFinalData = JSON.stringify(restData);
-    await fs.writeFile(file, restFinalData, { encoding: 'utf-8' });
+  async destroy(id: string): Promise<void> {
+    const initialData: string = await fs.readFile(file, {
+      encoding: 'utf-8',
+    });
+    const data: Beer[] = JSON.parse(initialData);
+    const index = data.findIndex((item) => item.name === id);
+    if (index < 0) throw new Error('Id not found');
+    data.slice(index, 1);
+    await fs.writeFile(file, JSON.stringify(data), 'utf-8');
   }
 }
