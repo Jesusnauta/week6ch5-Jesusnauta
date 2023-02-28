@@ -48,7 +48,7 @@ export class BeersFileRepo implements Repo<Beer> {
 
     if (!updatedItem.id) throw new Error('Id not found');
     await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
-    return updatedItem as Beer;
+    return updatedItem;
   }
 
   async destroy(id: string): Promise<void> {
@@ -59,6 +59,6 @@ export class BeersFileRepo implements Repo<Beer> {
     const index = data.findIndex((item) => item.name === id);
     if (index < 0) throw new Error('Id not found');
     data.slice(index, 1);
-    await fs.writeFile(file, JSON.stringify(data), 'utf-8');
+    fs.writeFile(file, JSON.stringify(data), 'utf-8');
   }
 }

@@ -1,10 +1,14 @@
 import { Response, Request, NextFunction } from 'express';
 import { Repo } from '../repository/repo.interface.js';
 import { Beer } from '../entities/beers';
+import createDebug from 'debug';
+const debug = createDebug('W6: controller');
 
 export class BeersController {
   // eslint-disable-next-line no-useless-constructor, no-unused-vars
-  constructor(public repo: Repo<Beer>) {}
+  constructor(public repo: Repo<Beer>) {
+    debug('Instantiate');
+  }
 
   async getAll(_req: Request, resp: Response, next: NextFunction) {
     try {
@@ -51,7 +55,7 @@ export class BeersController {
     }
   }
 
-  async delete(req: Request, resp: Response, next: NextFunction) {
+  async destroy(req: Request, resp: Response, next: NextFunction) {
     try {
       this.repo.destroy(req.params.id);
       resp.json({
